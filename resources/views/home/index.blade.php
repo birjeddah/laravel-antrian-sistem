@@ -14,10 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css">
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
+        * { box-sizing: border-box; }
         body {
             background-color: #0f172a;
             color: #f8fafc;
@@ -135,10 +132,6 @@
             font-size: 1.4rem;
         }
 
-        .queue-grid {
-            margin-top: 1rem;
-        }
-
         .queue-box {
             background: #1e293b;
             border: 2px solid #334155;
@@ -148,7 +141,7 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .queue-box.active-call {
@@ -205,7 +198,6 @@
 
 <body>
     <div class="container-fluid px-3">
-        <!-- الشريط العلوي -->
         <header class="header-bar">
             <div class="system-title">
                 <i class="fas fa-users-cog text-primary"></i>
@@ -217,7 +209,6 @@
             </div>
         </header>
 
-        <!-- منطقة الإعلانات وأوقات الدوام -->
         <div class="row g-4 mb-3 align-items-stretch">
             <div class="col-lg-9">
                 <div class="banner-container">
@@ -236,7 +227,6 @@
             </div>
         </div>
 
-        <!-- شريط التنبيه المتحرك -->
         <div class="ticker-strip">
             <i class="fas fa-bullhorn"></i>
             <marquee direction="right" scrollamount="6">
@@ -244,7 +234,6 @@
             </marquee>
         </div>
 
-        <!-- بطاقات الشبابيك والأرقام -->
         <div class="row g-4 queue-grid">
             @foreach ($data as$item)
                 <div class="col-md-6 col-lg-3">
@@ -265,22 +254,18 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // تحديث الساعة والتاريخ العربي
         function updateClock() {
             const now = new Date();
             const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            
             let h = now.getHours().toString().padStart(2, '0');
             let m = now.getMinutes().toString().padStart(2, '0');
             let s = now.getSeconds().toString().padStart(2, '0');
-            
             document.getElementById('clock').textContent = `${h}:${m}:${s}`;
             document.getElementById('day').textContent = now.toLocaleDateString('ar-SA', dateOptions);
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // النطق الصوتي العربي عند استدعاء رقم جديد
         function speakTicket(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -288,58 +273,56 @@
                 msg.lang = 'ar-SA';
                 msg.rate = 0.85;
                 msg.pitch = 1.0;
-
                 let voices = window.speechSynthesis.getVoices();
                 let arVoice = voices.find(v => v.lang.includes('ar'));
                 if (arVoice) msg.voice = arVoice;
-
                 window.speechSynthesis.speak(msg);
             }
         }
 
-        // مخزن للاحتفاظ بآخر رقم تم استدعاؤه لتفادي تكرار الصوت إلا عند تغيّر الرقم
+        let loketData = [
+            @foreach ($data as$d)
+                { id: "{{ $d->id }}", title: "{{ $d->tujuan }}" },
+            @endforeach
+        ];
+
         let previousNumbers = {};
 
-        @foreach ($data as $js)$(document).ready(function() {
-                setInterval(function() {
-                    let id = '{{ $js->id }}';
-                    let loketTitle = '{{ $js->tujuan }}';
+        $(document).ready(function() {$.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
 
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-
+            setInterval(function() {
+                loketData.forEach(function(item) {
                     $.ajax({
-                        data: { nomor: id },
+                        data: { nomor: item.id },
                         url: "/",
                         type: "POST",
                         dataType: 'json',
                         success: function(newNumber) {
                             if (newNumber && newNumber.toString().trim() !== '') {
-                                let currentElem = $('#nomor-' + id);
+                                let currentElem = $('#nomor-' + item.id);
                                 let oldVal = currentElem.text().trim();
 
                                 if (oldVal !== newNumber.toString().trim()) {
                                     currentElem.html(newNumber);
 
-                                    // إذا لم يكن هذا أول تحميل للصفحة، انطق الرقم وومض الشباك
-                                    if (previousNumbers[id] !== undefined && previousNumbers[id] !== newNumber) {
-                                        let card = $('#card-' + id);
+                                    if (previousNumbers[item.id] !== undefined && previousNumbers[item.id] !== newNumber) {
+                                        let card = $('#card-' + item.id);
                                         card.addClass('active-call');
                                         setTimeout(() => card.removeClass('active-call'), 6000);
-
-                                        speakTicket("الرقم " + newNumber + "، التوجه إلى " + loketTitle);
+                                        speakTicket("الرقم " + newNumber + "، التوجه إلى " + item.title);
                                     }
-                                    previousNumbers[id] = newNumber;
+                                    previousNumbers[item.id] = newNumber;
                                 }
                             }
                         }
                     });
-                }, 1500); // استعلام كل ثانية ونصف
-            });
-        @endforeach
+                });
+            }, 1500);
+        });
     </script>
 </body>
 </html>
