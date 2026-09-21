@@ -12,7 +12,8 @@ class LoketController extends Controller
     public function index()
     {
         $data = Loket::with('user')->get();
-        $user = User::whereRole('staff')->get();
+        // جلب المستخدمين برتبة staff أو user لضمان ظهور كل الموظفين الجدد في القائمة
+        $user = User::whereIn('role', ['staff', 'user'])->get();
         return view('backend.loket.index', compact('data', 'user'));
     }
 
@@ -29,8 +30,7 @@ class LoketController extends Controller
         ])->get();
 
         if (count($check) >= 1) {
-            # code...
-            return back()->with('galat', 'PJ Sudah ada di loket lain');
+            return back()->with('galat', 'هذا الموظف مرتبط بالفعل بشباك آخر');
         }
 
         Loket::create([
@@ -40,48 +40,47 @@ class LoketController extends Controller
             'status' => $request->status == true ? true : false
         ]);
 
-        return back()->with('success', 'Loket berhasil ditambahkan');
+        return back()->with('success', 'تمت إضافة الشباك بنجاح');
     }
 
     public function update(Request $request)
     {
         $data = Loket::find($request->loket);
         if (empty($data)) {
-            # code...
-            return back()->with('galat', 'Loket Tidak Tersedia');
+            return back()->with('galat', 'الشباك غير موجود');
         }
 
         $check = Loket::where([
             'user_id' => $request->user_id
         ])->get();
 
-        // dd(count($check));
-
         if (count($check) >= 1) {
-            # code...
             if ($check[0]->id == $request->loket) {
-                # code...
                 $data->update([
                     'user_id' => $request->user_id,
                     'status' => $request->status == true ? true : false
                 ]);
             } else {
-                # code...
-                return back()->with('galat', 'PJ Sudah ada di loket lain');
+                return back()->with('galat', 'هذا الموظف مرتبط بالفعل بشباك آخر');
             }
+        } else {
+            $data->update([
+                'user_id' => $request->user_id,
+                'status' => $request->status == true ? true : false
+            ]);
         }
-        return back()->with('success', 'Loket berhasil di update');
+        
+        return back()->with('success', 'تم تحديث بيانات الشباك بنجاح');
     }
 
     public function destroy(Request $request)
     {
         $data = Loket::find($request->loket);
         if (empty($data)) {
-            # code...
-            return back()->with('galat', 'Loket Tidak Tersedia');
+            return back()->with('galat', 'الشباك غير موجود');
         }
 
         $data->delete();
-        return back()->with('success', 'Loket berhasil dihapus');
+        return back()->with('success', 'تم حذف الشباك بنجاح');
     }
 }
