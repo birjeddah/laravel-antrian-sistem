@@ -7,18 +7,17 @@
     <title>شاشة صالة خدمة المستفيدين</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- الخطوط -->
+    <!-- الخطوط الحديثة -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700;800&family=Outfit:wght@800;900&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap 5 RTL -->
+    <!-- Bootstrap 5 RTL & FontAwesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
-            --brand-dark: #042f2e;
             --brand-primary: #0f766e;
             --brand-emerald: #059669;
             --brand-accent: #f59e0b;
@@ -45,7 +44,6 @@
             overflow-x: hidden;
         }
 
-        /* ترويسة الشاشة */
         .tv-top-bar {
             background: var(--card-glass);
             backdrop-filter: blur(20px);
@@ -85,7 +83,6 @@
             margin-top: 5px;
         }
 
-        /* رسالة الترحيب وأوقات الدوام */
         .banner-panel {
             background: linear-gradient(135deg, rgba(15, 118, 110, 0.35) 0%, rgba(5, 150, 105, 0.15) 100%);
             border: 1.5px solid rgba(52, 211, 153, 0.3);
@@ -105,7 +102,6 @@
             display: inline-block;
         }
 
-        /* بطاقات عرض أرقام الانتظار */
         .counter-card {
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
             border: 2px solid var(--border-glass);
@@ -155,7 +151,6 @@
             padding-top: 0.9rem;
         }
 
-        /* شريط الأخبار السفلي */
         .bottom-ticker {
             background: rgba(4, 47, 46, 0.65);
             border: 1.5px solid rgba(52, 211, 153, 0.35);
@@ -260,11 +255,10 @@
     <footer class="bottom-ticker mt-auto">
         <span class="ticker-pill"><i class="fa-solid fa-circle-info ms-1"></i> إعلان</span>
         <marquee direction="right" scrollamount="6">
-            أهلاً بكم في صالة خدمة المستفيدين — نرجو من مراجعينا الكرام تجهيز الهوية الوطنية والوثائق المطلوبة لسرعة إنهاء الإجراءات — نسعد دائماً بخدمتكم.
+            أهلاً بكم في صالة خدمة المستفيدين — نرجو من مراجعينا الكرام تجهيز الوثائق المطلوبة لسرعة إنهاء الإجراءات — نسعد دائماً بخدمتكم.
         </marquee>
     </footer>
 
-    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
