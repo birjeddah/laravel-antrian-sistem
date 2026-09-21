@@ -4,27 +4,27 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>شاشة عرض الانتظار | صالة خدمة المستفيدين</title>
+    <title>شاشة صالة خدمة المستفيدين</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- الخطوط: IBM Plex Sans Arabic للأيقونات والنصوص و Outfit للأرقام -->
+    <!-- الخطوط -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700;800&family=Outfit:wght@800;900&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap 5 RTL & FontAwesome -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.rtl.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
-            --primary-dark: #064e3b;
-            --primary-emerald: #0d5f57;
-            --primary-light: #10b981;
-            --accent-gold: #d97706;
-            --bg-canvas: #040e0c;
-            --card-glass: rgba(255, 255, 255, 0.04);
-            --card-border: rgba(255, 255, 255, 0.09);
+            --brand-dark: #042f2e;
+            --brand-primary: #0f766e;
+            --brand-emerald: #059669;
+            --brand-accent: #f59e0b;
+            --bg-deep: #021a17;
+            --card-glass: rgba(255, 255, 255, 0.05);
+            --border-glass: rgba(255, 255, 255, 0.12);
         }
 
         * {
@@ -34,11 +34,11 @@
 
         body {
             font-family: 'IBM Plex Sans Arabic', sans-serif;
-            background: radial-gradient(circle at 15% 15%, #0d2824 0%, #071916 45%, #030a08 100%);
+            background: radial-gradient(circle at 10% 10%, #0d3832 0%, var(--bg-deep) 60%, #010d0b 100%);
             min-height: 100vh;
             color: #ffffff;
             margin: 0;
-            padding: 1.5rem 2rem;
+            padding: 1.8rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -46,150 +46,140 @@
         }
 
         /* ترويسة الشاشة */
-        .tv-header {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(18px);
-            border: 1px solid var(--card-border);
-            border-radius: 22px;
-            padding: 1rem 2rem;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        .tv-top-bar {
+            background: var(--card-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 1.2rem 2.2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
-        .brand-box img {
-            max-height: 60px;
+        .brand-logo {
+            max-height: 70px;
             object-fit: contain;
-            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
         }
 
-        .brand-box .title-text {
-            border-right: 2px solid rgba(255, 255, 255, 0.15);
-            padding-right: 1.5rem;
-            margin-right: 1.5rem;
+        .title-divider {
+            border-right: 2px solid rgba(255, 255, 255, 0.2);
+            padding-right: 1.8rem;
+            margin-right: 1.8rem;
         }
 
-        .clock-container {
-            text-align: left;
-        }
-
-        .clock-container #clock {
+        .clock-num {
             font-family: 'Outfit', sans-serif;
-            font-size: 2.7rem;
-            font-weight: 800;
+            font-size: 3.2rem;
+            font-weight: 900;
             letter-spacing: 2px;
             color: #34d399;
-            text-shadow: 0 0 20px rgba(52, 211, 153, 0.35);
+            text-shadow: 0 0 25px rgba(52, 211, 153, 0.45);
             line-height: 1;
         }
 
-        .clock-container #day {
+        .date-txt {
             color: #94a3b8;
-            font-size: 0.95rem;
-            font-weight: 500;
-            margin-top: 4px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 5px;
         }
 
-        /* رسالة الترحيب */
-        .hero-banner {
-            background: linear-gradient(135deg, rgba(13, 95, 87, 0.4) 0%, rgba(6, 78, 59, 0.2) 100%);
-            border: 1px solid rgba(16, 185, 129, 0.25);
-            border-radius: 22px;
-            padding: 1.8rem 2.2rem;
-            position: relative;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
-            backdrop-filter: blur(12px);
+        /* رسالة الترحيب وأوقات الدوام */
+        .banner-panel {
+            background: linear-gradient(135deg, rgba(15, 118, 110, 0.35) 0%, rgba(5, 150, 105, 0.15) 100%);
+            border: 1.5px solid rgba(52, 211, 153, 0.3);
+            border-radius: 26px;
+            padding: 2.2rem;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(15px);
         }
 
         .hours-badge {
-            background: rgba(16, 185, 129, 0.15);
+            background: rgba(52, 211, 153, 0.18);
             color: #34d399;
             font-weight: 700;
-            padding: 0.35rem 1rem;
-            border-radius: 50px;
-            font-size: 0.82rem;
-            display: inline-block;
-        }
-
-        /* بطاقات أرقام الانتظار */
-        .loket-card-tv {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-            border: 1.5px solid var(--card-border);
-            border-radius: 24px;
-            padding: 1.6rem 1.2rem;
-            text-align: center;
-            transition: all 0.35s ease;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
-            backdrop-filter: blur(14px);
-        }
-
-        .loket-card-tv.pulse {
-            border-color: #34d399;
-            box-shadow: 0 0 35px rgba(16, 185, 129, 0.4);
-            transform: scale(1.02);
-        }
-
-        .window-badge {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 0.35rem 1.2rem;
+            padding: 0.4rem 1.2rem;
             border-radius: 50px;
             font-size: 0.95rem;
-            font-weight: 700;
-            color: #e2e8f0;
             display: inline-block;
-            margin-bottom: 1rem;
         }
 
-        .ticket-title {
-            font-size: 0.9rem;
-            color: #94a3b8;
-            font-weight: 500;
-            margin-bottom: 0.2rem;
+        /* بطاقات عرض أرقام الانتظار */
+        .counter-card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 2px solid var(--border-glass);
+            border-radius: 28px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .ticket-number {
+        .counter-card.call-pulse {
+            border-color: #34d399;
+            box-shadow: 0 0 50px rgba(52, 211, 153, 0.6);
+            transform: scale(1.03);
+        }
+
+        .counter-name {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1.6rem;
+            border-radius: 50px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #f1f5f9;
+            display: inline-block;
+            margin-bottom: 1.2rem;
+        }
+
+        .queue-num {
             font-family: 'Outfit', sans-serif;
-            font-size: 4.5rem;
+            font-size: 5.5rem;
             font-weight: 900;
-            color: #facc15;
-            text-shadow: 0 0 25px rgba(250, 204, 21, 0.35);
+            color: var(--brand-accent);
+            text-shadow: 0 0 35px rgba(245, 158, 11, 0.45);
             line-height: 1;
-            margin: 0.6rem 0;
-            letter-spacing: 2px;
+            margin: 0.8rem 0;
+            letter-spacing: 3px;
         }
 
-        .officer-info {
+        .staff-label {
             color: #38bdf8;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-top: 0.8rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            padding-top: 0.7rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 0.9rem;
         }
 
         /* شريط الأخبار السفلي */
-        .ticker-bar {
-            background: rgba(6, 78, 59, 0.45);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 16px;
-            padding: 0.7rem 1.4rem;
+        .bottom-ticker {
+            background: rgba(4, 47, 46, 0.65);
+            border: 1.5px solid rgba(52, 211, 153, 0.35);
+            border-radius: 20px;
+            padding: 0.9rem 1.8rem;
             display: flex;
             align-items: center;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px);
         }
 
-        .ticker-tag {
-            background: var(--primary-emerald);
+        .ticker-pill {
+            background: var(--brand-primary);
             color: #ffffff;
-            font-weight: 700;
-            padding: 0.3rem 0.9rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            margin-left: 1rem;
+            font-weight: 800;
+            padding: 0.4rem 1.2rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            margin-left: 1.5rem;
             white-space: nowrap;
         }
 
         marquee {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             font-weight: 600;
             color: #f8fafc;
         }
@@ -197,93 +187,89 @@
 </head>
 
 <body>
-    <!-- الترويسة -->
-    <header class="tv-header mb-4">
+    <header class="tv-top-bar mb-4">
         <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center brand-box">
-                <img src="https://albir.sa/_next/image?url=https%3A%2F%2Fapi.albir.sa%2Fuploads%2Falbir%2Fsetting%2Fimage%2Fee19ab72-b329-42b1-9bae-47989433545e.png&w=640&q=75" alt="شعار الجمعية">
-                <div class="title-text d-none d-md-block">
-                    <h4 class="fw-bold mb-1 text-white">منظومة إدارة وخدمة المستفيدين</h4>
-                    <p class="mb-0 text-white-50 small">صالة الاستقبال والانتظار الرقمية</p>
+            <div class="d-flex align-items-center">
+                <img src="https://albir.sa/_next/image?url=https%3A%2F%2Fapi.albir.sa%2Fuploads%2Falbir%2Fsetting%2Fimage%2Fee19ab72-b329-42b1-9bae-47989433545e.png&w=640&q=75" class="brand-logo" alt="شعار الجمعية">
+                <div class="title-divider d-none d-md-block">
+                    <h3 class="fw-bold mb-1 text-white">صالة خدمة المستفيدين</h3>
+                    <p class="mb-0 text-white-50 fs-6">شاشة عرض ومتابعة أرقام الانتظار</p>
                 </div>
             </div>
 
-            <div class="clock-container">
-                <div id="clock">00:00:00</div>
-                <div id="day">جاري الضبط...</div>
+            <div class="text-start">
+                <div id="clock" class="clock-num">00:00:00</div>
+                <div id="day" class="date-txt">جاري المزامنة...</div>
             </div>
         </div>
     </header>
 
-    <!-- رسالة ترحيبية وأوقات العمل -->
     <section class="container-fluid px-0 mb-4">
         <div class="row g-4">
             <div class="col-lg-9">
-                <div class="hero-banner">
+                <div class="banner-panel">
                     <div class="d-flex align-items-center gap-2 mb-2">
-                        <span class="badge bg-warning text-dark px-3 py-1 rounded-pill fw-bold">
-                            <i class="fa-solid fa-bullhorn ms-1"></i> إشعار
+                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold fs-6">
+                            <i class="fa-solid fa-bullhorn ms-1"></i> إشعار للمراجعين
                         </span>
                     </div>
-                    <h3 class="fw-bold text-white mb-2">نسعد بخدمتكم وتسهيل معاملاتكم بكل رحابة واهتمام</h3>
-                    <p class="text-white-50 fs-6 mb-0">
-                        يرجى الجلوس ومتابعة رقم تذكرتكم على الشاشة، والتوجه إلى الشباك الموضح فور ظهور الرقم.
+                    <h2 class="fw-bold text-white mb-2">أهلاً وسهلاً بكم | نسعد بتقديم أفضل وأسرع خدمة</h2>
+                    <p class="text-white-50 fs-5 mb-0">
+                        يرجى الجلوس في مقاعد الانتظار ومتابعة رقمكم على الشاشة؛ والتوجه مباشرة إلى الشباك الموضح فور استدعاء الرقم.
                     </p>
                 </div>
             </div>
 
             <div class="col-lg-3">
-                <div class="hero-banner text-center d-flex flex-column justify-content-center h-100">
+                <div class="banner-panel text-center d-flex flex-column justify-content-center h-100">
                     <span class="hours-badge mx-auto mb-2"><i class="fa-regular fa-clock ms-1"></i> أوقات استقبال المراجعين</span>
-                    <h4 class="fw-bold mb-0 text-white" style="font-family: 'Outfit';">08:00 AM - 02:30 PM</h4>
-                    <span class="text-success small fw-semibold mt-1"><i class="fa-solid fa-circle-check ms-1"></i> الصالة تستقبلكم الآن</span>
+                    <h3 class="fw-bold mb-1 text-white" style="font-family: 'Outfit';">08:00 AM - 02:30 PM</h3>
+                    <span class="text-success fw-bold fs-6 mt-1"><i class="fa-solid fa-circle-check ms-1"></i> الصالة مفتوحة حالياً</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- شبكة الشبابيك -->
     <main class="container-fluid px-0 my-auto">
         <div class="row g-4 justify-content-center">
             @forelse ($data as$item)
                 <div class="col-xl-3 col-lg-4 col-md-6">
-                    <div class="loket-card-tv" id="card-box-{{ $item->id }}">
-                        <div class="window-badge">
+                    <div class="counter-card" id="card-box-{{ $item->id }}">
+                        <div class="counter-name">
                             <i class="fa-solid fa-desktop ms-1 text-emerald"></i> {{ $item->tujuan }}
                         </div>
-                        <div class="ticket-title">الرقم قيد الخدمة</div>
-                        <div class="ticket-number" id="nomor-{{ $item->id }}">-</div>
-                        <div class="officer-info">
+                        <div class="text-white-50 fw-semibold fs-6 mb-1">الرقم قيد الخدمة</div>
+                        <div class="queue-num" id="nomor-{{ $item->id }}">-</div>
+                        <div class="staff-label">
                             <i class="fa-solid fa-user-tie ms-1"></i> {{ $item->user->name ?? 'موظف الخدمة' }}
                         </div>
                     </div>
                 </div>
             @empty
                 <div class="col-12 text-center py-5">
-                    <div class="p-5 rounded-4" style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1);">
-                        <i class="fa-solid fa-tv text-white-50 mb-3" style="font-size: 3.5rem;"></i>
-                        <h4 class="text-white fw-bold">لا توجد شبابيك مفعلة حالياً</h4>
-                        <p class="text-white-50 mb-0">يرجى تفعيل شبابيك الخدمة من لوحة التحكم لتظهر أرقام النداء هنا.</p>
+                    <div class="p-5 rounded-4" style="background: rgba(255,255,255,0.03); border: 2px dashed rgba(255,255,255,0.15);">
+                        <i class="fa-solid fa-tv text-white-50 mb-3" style="font-size: 4rem;"></i>
+                        <h3 class="text-white fw-bold">لا توجد شبابيك مفعلة حالياً</h3>
+                        <p class="text-white-50 fs-5 mb-0">يرجى تفعيل شبابيك الخدمة من لوحة التحكم لتظهر أرقام الانتظار هنا مباشرة.</p>
                     </div>
                 </div>
             @endforelse
         </div>
     </main>
 
-    <!-- الشريط الإخباري المتحرك -->
-    <footer class="ticker-bar mt-auto">
-        <span class="ticker-tag"><i class="fa-solid fa-info-circle ms-1"></i> تنبيه</span>
+    <footer class="bottom-ticker mt-auto">
+        <span class="ticker-pill"><i class="fa-solid fa-circle-info ms-1"></i> إعلان</span>
         <marquee direction="right" scrollamount="6">
-            أهلاً بكم في صالة خدمة المستفيدين — نرجو من مراجعينا الكرام التأكد من إحضار كافة المستندات المطلوبة لإتمام المعاملة بكل يسر وسهولة — نسعد دائماً بخدمتكم.
+            أهلاً بكم في صالة خدمة المستفيدين — نرجو من مراجعينا الكرام تجهيز الهوية الوطنية والوثائق المطلوبة لسرعة إنهاء الإجراءات — نسعد دائماً بخدمتكم.
         </marquee>
     </footer>
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        function updateClock() {
+        function updateLiveTime() {
             const now = new Date();
             let hours = now.getHours().toString().padStart(2, '0');
             let minutes = now.getMinutes().toString().padStart(2, '0');
@@ -293,14 +279,14 @@
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('day').textContent = now.toLocaleDateString('ar-SA', options);
         }
-        setInterval(updateClock, 1000);
-        updateClock();
+        setInterval(updateLiveTime, 1000);
+        updateLiveTime();
     </script>
 
     @foreach ($data as$js)
         <script>
             $(document).ready(function() {
-                var lastNum = '';
+                var lastVal = '';
                 setInterval(function() {
                     var nomor = '{{ $js->id }}';$.ajaxSetup({
                         headers: {
@@ -316,12 +302,12 @@
                             var target = $('#nomor-' + nomor);
                             var card = $('#card-box-' + nomor);
                             if (data !== null && data !== '') {
-                                if (lastNum !== '' && lastNum !== data) {
-                                    card.addClass('pulse');
-                                    setTimeout(() => card.removeClass('pulse'), 3500);
+                                if (lastVal !== '' && lastVal !== data) {
+                                    card.addClass('call-pulse');
+                                    setTimeout(() => card.removeClass('call-pulse'), 3500);
                                 }
                                 target.html(data);
-                                lastNum = data;
+                                lastVal = data;
                             } else {
                                 target.html('-');
                             }
