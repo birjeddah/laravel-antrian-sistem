@@ -100,26 +100,39 @@
             font-weight: 900;
         }
 
+        /* إخفاء عنصر الطباعة بشكل طبيعي في الشاشة العادية */
+        #ticket-print-area {
+            display: none;
+        }
+
+        /* تنسيق الطباعة الحرارية الصارمة */
         @media print {
-            body * { visibility: hidden; }
-            #ticket-print-area, #ticket-print-area * { visibility: visible; }
-            #ticket-print-area {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 80mm;
-                padding: 10px;
-                text-align: center;
-                color: #000;
-                font-family: 'IBM Plex Sans Arabic', sans-serif;
-                background: #fff;
+            body * {
+                visibility: hidden !important;
+                display: none !important;
             }
-            .ticket-header { font-size: 16px; font-weight: bold; margin-bottom: 4px; }
-            .ticket-sub { font-size: 12px; margin-bottom: 12px; }
-            .ticket-department { font-size: 18px; font-weight: bold; padding: 6px 0; border-top: 1px dashed #000; border-bottom: 1px dashed #000; margin-bottom: 8px; }
-            .ticket-number { font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 900; margin: 10px 0; line-height: 1; }
-            .ticket-info { font-size: 12px; margin-bottom: 4px; }
-            .ticket-footer { font-size: 10px; margin-top: 12px; }
+            #ticket-print-area, #ticket-print-area * {
+                visibility: visible !important;
+                display: block !important;
+            }
+            #ticket-print-area {
+                position: fixed !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 76mm !important;
+                margin: 0 auto !important;
+                padding: 5mm !important;
+                text-align: center !important;
+                color: #000 !important;
+                background: #fff !important;
+                z-index: 999999 !important;
+            }
+            .ticket-header { font-size: 14px; font-weight: bold; margin-bottom: 2px; }
+            .ticket-sub { font-size: 10px; margin-bottom: 8px; }
+            .ticket-department { font-size: 15px; font-weight: bold; padding: 4px 0; border-top: 1px dashed #000; border-bottom: 1px dashed #000; margin-bottom: 6px; }
+            .ticket-number { font-family: 'Outfit', sans-serif; font-size: 42px; font-weight: 900; margin: 5px 0; line-height: 1; }
+            .ticket-info { font-size: 10px; margin-bottom: 3px; }
+            .ticket-footer { font-size: 9px; margin-top: 8px; }
         }
     </style>
 </head>
@@ -170,7 +183,7 @@
     </main>
 
     <!-- منطقة طباعة التذكرة -->
-    <div id="ticket-print-area" style="display: none;">
+    <div id="ticket-print-area">
         <div class="ticket-header">جمعية البر بجدة</div>
         <div class="ticket-sub">نسعد بخدمتكم ونعتز بثقتكم</div>
         <div class="ticket-department" id="p-loket">-</div>
@@ -218,13 +231,14 @@
                     $('#p-waiting').text(res.waiting);
                     $('#p-time').text(res.time);
                     
-                    // تحديث العداد المعروض على الزر مباشرة
                     $('#count-' + id).text(res.waiting);
 
-                    $('#ticket-print-area').show();
                     Swal.close();
-                    window.print();
-                    $('#ticket-print-area').hide();
+                    
+                    // تأخير بسيط لضمان تحديث النص داخل عنصر الطباعة قبل فتح أمر الطباعة
+                    setTimeout(function() {
+                        window.print();
+                    }, 200);
 
                     Swal.fire({
                         icon: 'success',
