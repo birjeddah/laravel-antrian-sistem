@@ -13,7 +13,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        /* خلفية فاخرة متحركة بانسيابية تعكس هوية الجمعية الملكية */
         body {
             background: linear-gradient(135deg, #022c22, #064e3b, #047857, #0f172a);
             background-size: 400% 400%;
@@ -34,7 +33,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* رأس الصفحة الفاخر */
         .royal-header {
             background: rgba(2, 44, 34, 0.85);
             backdrop-filter: blur(16px);
@@ -42,13 +40,12 @@
             padding: 2.5rem 1rem;
             text-align: center;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-            position: relative;
         }
 
         .royal-logo {
-            height: 85px;
+            height: 90px;
             object-fit: contain;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
             filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4));
         }
 
@@ -57,12 +54,11 @@
             font-weight: 900;
             color: #ffffff;
             margin-bottom: 0.4rem;
-            letter-spacing: -0.5px;
             text-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
         }
 
         .welcome-title span {
-            color: #fbbf24; /* لمسة ذهبية فاخرة */
+            color: #fbbf24;
         }
 
         .welcome-subtitle {
@@ -70,10 +66,8 @@
             color: #a7f3d0;
             font-weight: 700;
             margin-bottom: 0;
-            letter-spacing: 0.5px;
         }
 
-        /* بطاقات الأقسام بتصميم زجاجي فاخر */
         .main-container {
             flex: 1;
             display: flex;
@@ -177,7 +171,6 @@
             font-weight: 900;
         }
 
-        /* تنسيق الطباعة الحرارية الصارمة */
         #ticket-print-area {
             display: none;
         }
@@ -197,31 +190,30 @@
                 top: 0 !important;
                 width: 76mm !important;
                 margin: 0 auto !important;
-                padding: 5mm !important;
+                padding: 4mm !important;
                 text-align: center !important;
                 color: #000 !important;
                 background: #fff !important;
                 z-index: 999999 !important;
             }
-            .ticket-header { font-size: 16px; font-weight: bold; margin-bottom: 2px; }
-            .ticket-sub { font-size: 11px; margin-bottom: 8px; font-weight: bold; color: #064e3b; }
-            .ticket-department { font-size: 17px; font-weight: bold; padding: 6px 0; border-top: 1px dashed #000; border-bottom: 1px dashed #000; margin-bottom: 8px; }
-            .ticket-number { font-family: 'Outfit', sans-serif; font-size: 46px; font-weight: 900; margin: 6px 0; line-height: 1; }
-            .ticket-info { font-size: 11px; margin-bottom: 4px; }
-            .ticket-footer { font-size: 10px; margin-top: 12px; border-top: 1px solid #ccc; padding-top: 6px; }
+            .ticket-header { font-size: 15px; font-weight: bold; margin-bottom: 2px; }
+            .ticket-sub { font-size: 10px; margin-bottom: 6px; font-weight: bold; color: #064e3b; }
+            .ticket-department { font-size: 16px; font-weight: bold; padding: 4px 0; border-top: 1px dashed #000; border-bottom: 1px dashed #000; margin-bottom: 6px; }
+            .ticket-number { font-family: 'Outfit', sans-serif; font-size: 44px; font-weight: 900; margin: 4px 0; line-height: 1; }
+            .ticket-info { font-size: 10px; margin-bottom: 3px; }
+            .ticket-footer { font-size: 9px; margin-top: 8px; border-top: 1px solid #ccc; padding-top: 4px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- الترويسة الملكية الفخمة -->
     <header class="royal-header">
-        <img src="{{ asset('assets/logo.png') }}" alt="شعار جمعية البر بجدة" class="royal-logo" onerror="this.style.display='none'">
+        <!-- استخدام الشعار الرسمي للجمعية من الرابط المعتمد -->
+        <img src="https://albir.sa/_next/image?url=https%3A%2F%2Fapi.albir.sa%2Fuploads%2Falbir%2Fsetting%2Fimage%2Fee19ab72-b329-42b1-9bae-47989433545e.png&w=640&q=75" alt="شعار جمعية البر بجدة" class="royal-logo">
         <h1 class="welcome-title">أهلاً بكم في <span>جمعية البر بجدة</span></h1>
         <p class="welcome-subtitle">نسعد بخدمتكم، ونعتز بثقتكم الدائمة</p>
     </header>
 
-    <!-- المحتوى الرئيسي -->
     <main class="main-container container">
         <div class="w-100">
             <h2 class="section-prompt">الرجاء اختيار القسم المطلوب لسحب التذكرة</h2>
@@ -264,7 +256,7 @@
         </div>
     </main>
 
-    <!-- قالب الطباعة الحرارية الصارم -->
+    <!-- قالب الطباعة الحرارية -->
     <div id="ticket-print-area">
         <div class="ticket-header">جمعية البر بجدة</div>
         <div class="ticket-sub">نسعد بخدمتكم ونعتز بثقتكم</div>
@@ -297,13 +289,7 @@
         function issueTicket(id) {
             playChime();
 
-            Swal.fire({
-                title: 'جاري طباعة تذكرتكم...',
-                text: 'يرجى الانتظار، نسعد بخدمتكم',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); }
-            });
-
+            // طباعة سريعة بدون إزعاج المراجع بنافذة طويلة
             $.ajax({
                 url: '/kiosk/ticket/' + id,
                 type: 'GET',
@@ -315,18 +301,18 @@
                     
                     $('#count-' + id).text(res.waiting);
 
-                    Swal.close();
-                    
-                    setTimeout(function() {
-                        window.print();
-                    }, 200);
+                    // إرسال أمر الطباعة المباشر
+                    window.print();
 
+                    // تنبيه سريع جداً يختفي تلقائياً
                     Swal.fire({
                         icon: 'success',
-                        title: 'تم إصدار التذكرة بنجاح',
-                        html: '<div style="font-size: 1.5rem; font-weight: bold; color: #047857; margin: 10px 0;">رقمك: ' + res.nomor + '</div><p class="mb-1">القسم: <b>' + res.loket + '</b></p><p>المنتظرون أمامك: <b>' + res.waiting + '</b> مراجع</p>',
-                        timer: 4000,
-                        showConfirmButton: false
+                        title: 'رقمك: ' + res.nomor,
+                        html: '<p class="mb-1">القسم: <b>' + res.loket + '</b></p><p>أمامك في الانتظار: <b>' + res.waiting + '</b> مراجع</p>',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        background: '#022c22',
+                        color: '#fff'
                     });
                 },
                 error: function(xhr) {
