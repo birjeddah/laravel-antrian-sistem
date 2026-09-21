@@ -132,6 +132,10 @@
             font-size: 1.4rem;
         }
 
+        .queue-grid {
+            margin-top: 1rem;
+        }
+
         .queue-box {
             background: #1e293b;
             border: 2px solid #334155;
@@ -141,7 +145,7 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, border-color 0.3s ease;
         }
 
         .queue-box.active-call {
@@ -235,18 +239,20 @@
         </div>
 
         <div class="row g-4 queue-grid">
-            @foreach ($data as$item)
-                <div class="col-md-6 col-lg-3">
-                    <div class="queue-box" id="card-{{ $item->id }}">
-                        <div class="queue-label">رقم الانتظار</div>
-                        <div class="queue-number-value" id="nomor-{{ $item->id }}">---</div>
-                        <div class="queue-window-title">
-                            <i class="fas fa-desktop ms-1 text-info"></i>
-                            {{ $item->tujuan }}
+            <?php if (!empty($data)): ?>
+                <?php foreach ($data as$item): ?>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="queue-box" id="card-<?php echo $item->id; ?>">
+                            <div class="queue-label">رقم الانتظار</div>
+                            <div class="queue-number-value" id="nomor-<?php echo $item->id; ?>">---</div>
+                            <div class="queue-window-title">
+                                <i class="fas fa-desktop ms-1 text-info"></i>
+                                <?php echo htmlspecialchars($item->tujuan); ?>
+                            </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -280,11 +286,9 @@
             }
         }
 
-        let loketData = [
-            @foreach ($data as$d)
-                { id: "{{ $d->id }}", title: "{{ $d->tujuan }}" },
-            @endforeach
-        ];
+        let loketData = <?php echo json_encode(array_map(function($d) {
+            return ['id' => $d->id, 'title' =>$d->tujuan];
+        }, (isset($data) && count($data)) ?$data->all() : [])); ?>;
 
         let previousNumbers = {};
 
@@ -295,6 +299,8 @@
             });
 
             setInterval(function() {
+                if (!loketData || loketData.length === 0) return;
+
                 loketData.forEach(function(item) {
                     $.ajax({
                         data: { nomor: item.id },
