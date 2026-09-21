@@ -7,12 +7,10 @@
     <title>شاشة صالة خدمة المستفيدين</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- الخطوط الحديثة -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700;800&family=Outfit:wght@800;900&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap 5 RTL & FontAwesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -47,7 +45,6 @@
         .tv-top-bar {
             background: var(--card-glass);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-glass);
             border-radius: 24px;
             padding: 1.2rem 2.2rem;
