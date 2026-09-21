@@ -169,31 +169,67 @@
 @endsection
 
 @section('scripts')
-    <script src="https://code.responsivevoice.org/responsivevoice.js?key=jQZ2zcdq"></script>
+<script>
+    function playQueueAnnouncement(text) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+
+            // تجهيز نطق النص بالعربية
+            let utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ar-SA';
+            utterance.rate = 0.85;
+            utterance.pitch = 1.0;
+
+            // البحث عن صوت عربي في نظام المتصفح إن توفر
+            let voices = window.speechSynthesis.getVoices();
+            let arVoice = voices.find(v => v.lang.includes('ar'));
+            if (arVoice) {
+                utterance.voice = arVoice;
+            }
+
+            // توليد نغمة تنبيه (Ding-Dong) خفيفة قبل النداء عبر AudioContext
+            try {
+                let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // نغمة D5
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // انتقال إلى A5
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.45);
+
+                setTimeout(() => {
+                    window.speechSynthesis.speak(utterance);
+                }, 450);
+            } catch (e) {
+                window.speechSynthesis.speak(utterance);
+            }
+        } else {
+            alert('متصفحك لا يدعم النطق الصوتي.');
+        }
+    }
+
+    // التأكد من تحميل أصوات النظام
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = function() {
+            window.speechSynthesis.getVoices();
+        };
+    }
+
     @if (session('finish'))
-        <script>
-            $(document).ready(function() {
-                responsiveVoice.speak(
-                    "الرقم، " + "{{ $data->nomor }}" + "، التوجه إلى، " + "{{ $data->loket->tujuan }}",
-                    "Arabic Female", {
-                        rate: 0.85,
-                        pitch: 1,
-                        volume: 1
-                    }
-                );
-            });
-        </script>
-    @endif
-    <script>
-        $('#ulangi').click(function() {
-            responsiveVoice.speak(
-                "نكرر النداء، الرقم، " + "{{ $data->nomor }}" + "، التوجه إلى، " + "{{ $data->loket->tujuan }}",
-                "Arabic Female", {
-                    rate: 0.85,
-                    pitch: 1,
-                    volume: 1
-                }
-            );
+        $(document).ready(function() {
+            let msg = "الرقم {{ $data->nomor }}، التوجه إلى {{ $data->loket->tujuan }}";
+            playQueueAnnouncement(msg);
         });
-    </script>
+    @endif
+
+    $('#ulangi').click(function() {
+        let msg = "نكرر النداء، الرقم {{ $data->nomor }}، التوجه إلى {{ $data->loket->tujuan }}";
+        playQueueAnnouncement(msg);
+    });
+</script>
 @endsection
