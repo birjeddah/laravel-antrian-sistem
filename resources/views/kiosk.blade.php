@@ -208,7 +208,6 @@
 <body>
 
     <header class="royal-header">
-        <!-- استخدام الشعار الرسمي للجمعية من الرابط المعتمد -->
         <img src="https://albir.sa/_next/image?url=https%3A%2F%2Fapi.albir.sa%2Fuploads%2Falbir%2Fsetting%2Fimage%2Fee19ab72-b329-42b1-9bae-47989433545e.png&w=640&q=75" alt="شعار جمعية البر بجدة" class="royal-logo">
         <h1 class="welcome-title">أهلاً بكم في <span>جمعية البر بجدة</span></h1>
         <p class="welcome-subtitle">نسعد بخدمتكم، ونعتز بثقتكم الدائمة</p>
@@ -232,6 +231,7 @@
                     <div class="col-md-6 col-lg-5">
                         <div class="department-card" onclick="issueTicket({{ $loket->id }})">
                             <div>
+                                the department-icon">
                                 <div class="department-icon">
                                     <i class="fas fa-hand-point-down"></i>
                                 </div>
@@ -286,10 +286,12 @@
             } catch(e) {}
         }
 
+        // نصيحة سريعة لمتصفح الكروم لتجاوز زر الطباعة نهائياً في جهاز الكيوسك:
+        // افتح صفحة الكيوسك، اضغط Ctrl+P مرة واحدة، اختر الطابعة الحرارية، وفي خيارات إضافية ألغِ تفعيل "Headers and footers" وتأكد أن الطابعة الافتراضية معتمدة، في المرات القادمة ستطبع فوراً دون مربعات حوار مزعجة.
+
         function issueTicket(id) {
             playChime();
 
-            // طباعة سريعة بدون إزعاج المراجع بنافذة طويلة
             $.ajax({
                 url: '/kiosk/ticket/' + id,
                 type: 'GET',
@@ -301,23 +303,11 @@
                     
                     $('#count-' + id).text(res.waiting);
 
-                    // إرسال أمر الطباعة المباشر
+                    // أمر الطباعة المباشر
                     window.print();
-
-                    // تنبيه سريع جداً يختفي تلقائياً
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'رقمك: ' + res.nomor,
-                        html: '<p class="mb-1">القسم: <b>' + res.loket + '</b></p><p>أمامك في الانتظار: <b>' + res.waiting + '</b> مراجع</p>',
-                        timer: 2000,
-                        showConfirmButton: false,
-                        background: '#022c22',
-                        color: '#fff'
-                    });
                 },
                 error: function(xhr) {
                     console.error("AJAX Error:", xhr.responseText);
-                    Swal.fire('خطأ', 'تعذر إصدار التذكرة، يرجى المحاولة ثانية', 'error');
                 }
             });
         }
