@@ -35,6 +35,37 @@ Route::prefix('v1')->middleware('auth')->group(function () {
     });
 });
 
-
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// =========================================================================
+// مسارات شاشة الخدمة الذاتية للمراجعين (Kiosk) وإصدار التذاكر
+// =========================================================================
+Route::get('/kiosk', function () {
+    $lokets = \App\Models\Loket::where('status', true)->get();
+    return view('kiosk', compact('lokets'));
+})->name('kiosk');
+
+Route::get('/kiosk/ticket/{id}', function ($id) {
+    $loket = \App\Models\Loket::findOrFail($id);
+    
+    // حساب الرقم التالي بناءً على التذاكر المصدرة اليوم
+    $cacheKey = 'ticket_count_' . $id . '_' . date('Y-m-d');
+    $count = cache()->get($cacheKey, 0);
+    
+    $dbLatest = \App\Models\Antrian::where('loket_id', $id)
+        ->whereDate('created_at', \Carbon\Carbon::today())
+        ->count();
+        
+    $next = max($count, $dbLatest) + 1;
+    cache()->put($cacheKey, $next);
+
+    $str_length = 3;
+    $str = substr("0000{$next}", -$str_length);
+    $nomor = $loket->kode . $str;
+
+    return response()->json([
+        'nomor' => $nomor,
+        'loket' => $loket->tujuan,
+        'time' => date('Y-m-d h:i A')
+    ]);
+});
