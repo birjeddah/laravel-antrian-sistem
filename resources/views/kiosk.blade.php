@@ -171,11 +171,23 @@
             font-weight: 900;
         }
 
+        /* إخفاء حاوية الطباعة في العرض العادي */
         #ticket-print-area {
             display: none;
         }
 
+        /* قواعد حصرية وصارمة جداً للطابعة الحرارية بمقاس 80mm لتجنب صفحة الـ A4 الكبيرة */
         @media print {
+            @page {
+                size: 80mm auto;
+                margin: 0mm;
+            }
+            body, html {
+                width: 80mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #fff !important;
+            }
             body * {
                 visibility: hidden !important;
                 display: none !important;
@@ -185,23 +197,23 @@
                 display: block !important;
             }
             #ticket-print-area {
-                position: fixed !important;
+                position: absolute !important;
                 left: 0 !important;
                 top: 0 !important;
-                width: 76mm !important;
+                width: 72mm !important;
                 margin: 0 auto !important;
                 padding: 4mm !important;
                 text-align: center !important;
                 color: #000 !important;
                 background: #fff !important;
-                z-index: 999999 !important;
+                font-family: 'Cairo', sans-serif !important;
             }
-            .ticket-header { font-size: 15px; font-weight: bold; margin-bottom: 2px; }
-            .ticket-sub { font-size: 10px; margin-bottom: 6px; font-weight: bold; color: #064e3b; }
-            .ticket-department { font-size: 16px; font-weight: bold; padding: 4px 0; border-top: 1px dashed #000; border-bottom: 1px dashed #000; margin-bottom: 6px; }
-            .ticket-number { font-family: 'Outfit', sans-serif; font-size: 44px; font-weight: 900; margin: 4px 0; line-height: 1; }
-            .ticket-info { font-size: 10px; margin-bottom: 3px; }
-            .ticket-footer { font-size: 9px; margin-top: 8px; border-top: 1px solid #ccc; padding-top: 4px; }
+            .t-title { font-size: 14px; font-weight: 800; margin-bottom: 2px; }
+            .t-sub { font-size: 9px; margin-bottom: 6px; font-weight: 700; color: #064e3b; }
+            .t-dept { font-size: 15px; font-weight: 800; padding: 4px 0; border-top: 1px dashed #000; border-bottom: 1px dashed #000; margin-bottom: 6px; }
+            .t-num { font-family: 'Outfit', sans-serif; font-size: 42px; font-weight: 900; margin: 4px 0; line-height: 1; }
+            .t-inf { font-size: 9px; margin-bottom: 3px; }
+            .t-foot { font-size: 8px; margin-top: 8px; border-top: 1px solid #ccc; padding-top: 4px; }
         }
     </style>
 </head>
@@ -231,7 +243,6 @@
                     <div class="col-md-6 col-lg-5">
                         <div class="department-card" onclick="issueTicket({{ $loket->id }})">
                             <div>
-                                the department-icon">
                                 <div class="department-icon">
                                     <i class="fas fa-hand-point-down"></i>
                                 </div>
@@ -256,15 +267,15 @@
         </div>
     </main>
 
-    <!-- قالب الطباعة الحرارية -->
+    <!-- قالب التذكرة الحرارية المصغر بالمقاس الصحيح -->
     <div id="ticket-print-area">
-        <div class="ticket-header">جمعية البر بجدة</div>
-        <div class="ticket-sub">نسعد بخدمتكم ونعتز بثقتكم</div>
-        <div class="ticket-department" id="p-loket">-</div>
-        <div class="ticket-number" id="p-nomor">-</div>
-        <div class="ticket-info">أمامك في الانتظار: <strong id="p-waiting">-</strong> مراجع</div>
-        <div class="ticket-info" id="p-time">-</div>
-        <div class="ticket-footer">يرجى الانتظار حتى ظهور رقمكم على شاشات العرض</div>
+        <div class="t-title">جمعية البر بجدة</div>
+        <div class="t-sub">نسعد بخدمتكم ونعتز بثقتكم</div>
+        <div class="t-dept" id="p-loket">-</div>
+        <div class="t-num" id="p-nomor">-</div>
+        <div class="t-inf">أمامك في الانتظار: <strong id="p-waiting">-</strong> مراجع</div>
+        <div class="t-inf" id="p-time">-</div>
+        <div class="t-foot">يرجى الانتظار حتى ظهور رقمكم على شاشات العرض</div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -286,8 +297,10 @@
             } catch(e) {}
         }
 
-        // نصيحة سريعة لمتصفح الكروم لتجاوز زر الطباعة نهائياً في جهاز الكيوسك:
-        // افتح صفحة الكيوسك، اضغط Ctrl+P مرة واحدة، اختر الطابعة الحرارية، وفي خيارات إضافية ألغِ تفعيل "Headers and footers" وتأكد أن الطابعة الافتراضية معتمدة، في المرات القادمة ستطبع فوراً دون مربعات حوار مزعجة.
+        // ملاحظة هامة جداً لتجاوز نافذة معاينة المتصفح في جهاز الكيوسك نهائياً:
+        // افتح متصفح الكروم في جهاز الكيوسك، اضغط Ctrl+P مرة واحدة، من قائمة الطابعات اختر طابعتك الحرارية،
+        // وفي قسم "Paper size" أو "حجم الورق" اختر 80mm (أو Roll)، وألغِ خيار "Headers and footers".
+        // الكروم يحفظ هذا الإعداد تلقائياً ولن تظهر معاينة الطباعة بعد ذلك أبداً بل ستخرج التذكرة فوراً!
 
         function issueTicket(id) {
             playChime();
@@ -303,7 +316,6 @@
                     
                     $('#count-' + id).text(res.waiting);
 
-                    // أمر الطباعة المباشر
                     window.print();
                 },
                 error: function(xhr) {
