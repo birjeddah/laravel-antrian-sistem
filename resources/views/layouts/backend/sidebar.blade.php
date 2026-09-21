@@ -1,3 +1,13 @@
+<div class="sidebar-header position-relative text-center py-4 px-3 border-bottom mb-3">
+    <div class="d-flex justify-content-center align-items-center">
+        <a href="{{ route('v1') }}">
+            <img src="https://albir.sa/_next/image?url=https%3A%2F%2Fapi.albir.sa%2Fuploads%2Falbir%2Fsetting%2Fimage%2Fee19ab72-b329-42b1-9bae-47989433545e.png&w=640&q=75" 
+                 alt="شعار الجمعية" 
+                 style="max-height: 60px; max-width: 100%; object-fit: contain;">
+        </a>
+    </div>
+</div>
+
 <div class="sidebar-menu">
     <ul class="menu">
         <li class="sidebar-title">الرئيسية</li>
