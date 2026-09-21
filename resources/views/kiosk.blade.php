@@ -3,90 +3,103 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>بوابة الخدمة الذاتية | جمعية البر بجدة</title>
+    <title>بوابة الخدمة الذاتية | سحب التذاكر</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Outfit:wght@800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700;800&family=Outfit:wght@800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css">
-    
-    <!-- مكتبة التنبيهات المنبثقة -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background: #0f172a;
             font-family: 'IBM Plex Sans Arabic', sans-serif;
             min-height: 100vh;
+            color: #f8fafc;
             display: flex;
             flex-direction: column;
-            color: #fff;
+            user-select: none;
         }
 
-        .header-title {
+        .header-section {
+            background: #1e293b;
+            border-bottom: 2px solid #334155;
+            padding: 2.5rem 1rem;
             text-align: center;
-            padding: 3rem 1rem;
-            background: rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .header-title h1 {
-            font-weight: 700;
+        .header-section h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
             color: #38bdf8;
-            font-size: 2.5rem;
             margin-bottom: 0.5rem;
         }
 
-        .header-title p {
-            font-size: 1.4rem;
+        .header-section p {
+            font-size: 1.5rem;
             color: #10b981;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 0;
         }
 
-        .departments-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-
-        .loket-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 3rem 2rem;
+        .kiosk-card {
+            background: #1e293b;
+            border: 3px solid #334155;
+            border-radius: 28px;
+            padding: 2.5rem 1.5rem;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            height: 100%;
+            transition: all 0.25s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
+            justify-content: space-between;
+            min-height: 280px;
         }
 
-        .loket-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.1);
+        .kiosk-card:hover, .kiosk-card:active {
+            transform: scale(1.03);
             border-color: #38bdf8;
-            box-shadow: 0 15px 35px rgba(56, 189, 248, 0.2);
+            background: #24344d;
+            box-shadow: 0 15px 35px rgba(56, 189, 248, 0.25);
         }
 
-        .loket-card i {
+        .kiosk-card i {
             font-size: 4rem;
             color: #38bdf8;
+            margin-bottom: 1rem;
         }
 
-        .loket-card h2 {
+        .kiosk-card h3 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .waiting-badge {
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 50px;
+            padding: 0.6rem 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            font-size: 2rem;
-            margin: 0;
+            color: #cbd5e1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        /* تنسيق الطباعة للطابعة الحرارية 80mm */
+        .waiting-count {
+            color: #f59e0b;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 900;
+        }
+
         @media print {
             body * { visibility: hidden; }
             #ticket-print-area, #ticket-print-area * { visibility: visible; }
@@ -99,52 +112,73 @@
                 text-align: center;
                 color: #000;
                 font-family: 'IBM Plex Sans Arabic', sans-serif;
-                background: white;
+                background: #fff;
             }
-            .ticket-header { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
-            .ticket-subtitle { font-size: 12px; margin-bottom: 15px; }
-            .ticket-tujuan { font-size: 18px; font-weight: bold; padding: 5px; border-top: 1px dashed #000; border-bottom: 1px dashed #000; margin-bottom: 10px;}
-            .ticket-number { font-family: 'Outfit', sans-serif; font-size: 45px; font-weight: 900; margin-bottom: 10px; line-height: 1;}
-            .ticket-footer { font-size: 10px; color: #555; }
+            .ticket-header { font-size: 16px; font-weight: bold; margin-bottom: 4px; }
+            .ticket-sub { font-size: 12px; margin-bottom: 12px; }
+            .ticket-department { font-size: 18px; font-weight: bold; padding: 6px 0; border-top: 1px dashed #000; border-bottom: 1px dashed #000; margin-bottom: 8px; }
+            .ticket-number { font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 900; margin: 10px 0; line-height: 1; }
+            .ticket-info { font-size: 12px; margin-bottom: 4px; }
+            .ticket-footer { font-size: 10px; margin-top: 12px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="header-title no-print">
-        <h1>بوابة الخدمة الذاتية | جمعية البر بجدة</h1>
+    <header class="header-section">
+        <h1>بوابة الخدمة الذاتية</h1>
         <p>نسعد بخدمتكم ونعتز بثقتكم</p>
-    </div>
+    </header>
 
-    <div class="departments-container no-print">
-        <div class="container">
-            <h4 class="text-center text-white mb-5">الرجاء اختيار القسم المطلوب لسحب التذكرة</h4>
-            <div class="row g-4 justify-content-center">
-                @foreach($lokets as $loket)
-                    <div class="col-md-4 col-lg-3">
-                        <div class="loket-card" onclick="printTicket({{ $loket->id }})">
+    <main class="container my-auto py-5">
+        <h3 class="text-center text-light mb-5 fw-bold">الرجاء اختيار القسم المطلوب لسحب التذكرة</h3>
+        
+        <div class="row g-4 justify-content-center">
+            @forelse($lokets as $loket)
+                @php
+                    $countWaiting = \App\Models\Antrian::where('loket_id', $loket->id)
+                        ->whereDate('created_at', \Carbon\Carbon::today())
+                        ->where('status', 'waiting')
+                        ->count();
+                @endphp
+                <div class="col-md-6 col-lg-4">
+                    <div class="kiosk-card" onclick="issueTicket({{ $loket->id }})">
+                        <div>
                             <i class="fas fa-hand-pointer"></i>
-                            <h2>{{ $loket->tujuan }}</h2>
+                            <h3>{{ $loket->tujuan }}</h3>
+                        </div>
+                        <div>
+                            <div class="waiting-badge">
+                                <span>في الانتظار:</span>
+                                <span class="waiting-count" id="count-{{ $loket->id }}">{{ $countWaiting }}</span>
+                                <span>مراجع</span>
+                            </div>
                         </div>
                     </div>
-                @endforeach
-            </div>
+                </div>
+            @empty
+                <div class="col-12 text-center">
+                    <div class="alert alert-warning fs-5 p-4 rounded-4">
+                        لا توجد أقسام مسجلة في النظام حالياً. يرجى إضافة شبابيك من لوحة التحكم.
+                    </div>
+                </div>
+            @endforelse
         </div>
-    </div>
+    </main>
 
-    <!-- القالب المخفي الذي سيتم طباعته على الطابعة الحرارية -->
+    <!-- منطقة طباعة التذكرة -->
     <div id="ticket-print-area" style="display: none;">
         <div class="ticket-header">جمعية البر بجدة</div>
-        <div class="ticket-subtitle">نسعد بخدمتكم ونعتز بثقتكم</div>
-        <div class="ticket-tujuan" id="print-tujuan">القسم</div>
-        <div class="ticket-number" id="print-nomor">A000</div>
-        <div class="ticket-footer" id="print-time">التاريخ والوقت</div>
-        <div class="ticket-footer" style="margin-top: 10px;">يرجى الانتظار حتى يتم استدعاء رقمك</div>
+        <div class="ticket-sub">نسعد بخدمتكم ونعتز بثقتكم</div>
+        <div class="ticket-department" id="p-loket">-</div>
+        <div class="ticket-number" id="p-nomor">-</div>
+        <div class="ticket-info">العملاء في الانتظار: <strong id="p-waiting">-</strong></div>
+        <div class="ticket-info" id="p-time">-</div>
+        <div class="ticket-footer">يرجى الانتظار حتى ظهور رقمكم على شاشة العرض</div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        // مؤثر صوتي مميز عند الضغط
         function playChime() {
             try {
                 let ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -152,56 +186,53 @@
                 let gain = ctx.createGain();
                 osc.connect(gain);
                 gain.connect(ctx.destination);
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(880, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.15);
-                gain.gain.setValueAtTime(0.5, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(659.25, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.12);
+                gain.gain.setValueAtTime(0.4, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
                 osc.start();
-                osc.stop(ctx.currentTime + 0.5);
+                osc.stop(ctx.currentTime + 0.45);
             } catch(e) {}
         }
 
-        function printTicket(loketId) {
+        function issueTicket(id) {
             playChime();
-            
+
             Swal.fire({
-                title: 'جاري إصدار التذكرة...',
-                html: 'الرجاء الانتظار وسحب التذكرة من الطابعة',
+                title: 'جاري طباعة التذكرة...',
+                text: 'فضلاً انتظر خروج التذكرة',
                 allowOutsideClick: false,
                 didOpen: () => { Swal.showLoading(); }
             });
 
             $.ajax({
-                url: '/kiosk/ticket/' + loketId,
+                url: '/kiosk/ticket/' + id,
                 type: 'GET',
-                success: function(response) {
-                    // تعبئة التذكرة بالبيانات
-                    $('#print-nomor').text(response.nomor);
-                    $('#print-tujuan').text(response.loket);
-                    $('#print-time').text(response.time);
+                success: function(res) {
+                    $('#p-nomor').text(res.nomor);
+                    $('#p-loket').text(res.loket);
+                    $('#p-waiting').text(res.waiting);
+                    $('#p-time').text(res.time);
                     
-                    // إظهار منطقة الطباعة مؤقتاً للطباعة
+                    // تحديث العداد المعروض على الزر مباشرة
+                    $('#count-' + id).text(res.waiting);
+
                     $('#ticket-print-area').show();
-                    
                     Swal.close();
-                    
-                    // بدء الطباعة
                     window.print();
-                    
-                    // إخفاء منطقة الطباعة بعد الأمر
                     $('#ticket-print-area').hide();
 
                     Swal.fire({
                         icon: 'success',
-                        title: 'تم سحب التذكرة!',
-                        text: 'رقمك هو: ' + response.nomor,
-                        timer: 3000,
+                        title: 'رقمك: ' + res.nomor,
+                        html: '<p class="mb-1">القسم: <b>' + res.loket + '</b></p><p>أمامك في الانتظار: <b>' + (res.waiting - 1) + '</b> مراجع</p>',
+                        timer: 3500,
                         showConfirmButton: false
                     });
                 },
                 error: function() {
-                    Swal.fire('خطأ', 'حدث مشكلة أثناء إصدار التذكرة، يرجى المحاولة مرة أخرى', 'error');
+                    Swal.fire('خطأ', 'تعذر إصدار التذكرة، يرجى المحاولة ثانية', 'error');
                 }
             });
         }
