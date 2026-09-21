@@ -25,17 +25,17 @@
             right: 0;
             left: 0;
             height: 6px;
-            background: linear-gradient(90deg, #0d5f57, #10b981);
+            background: linear-gradient(90deg, #0f766e, #10b981);
         }
 
         .antri-number {
             font-family: 'Outfit', sans-serif;
             font-weight: 900;
             font-size: 6.5rem;
-            color: #0d5f57;
+            color: #0f766e;
             letter-spacing: 4px;
             line-height: 1.1;
-            text-shadow: 0 8px 25px rgba(13, 95, 87, 0.18);
+            text-shadow: 0 8px 25px rgba(15, 118, 110, 0.18);
             margin: 1.5rem 0;
         }
 
@@ -47,14 +47,14 @@
         }
 
         .btn-call-next {
-            background: linear-gradient(135deg, #0d5f57 0%, #047857 100%) !important;
+            background: linear-gradient(135deg, #0f766e 0%, #0d5f57 100%) !important;
             border: none !important;
             border-radius: 16px !important;
             padding: 1.1rem 1.5rem !important;
             font-size: 1.15rem !important;
             font-weight: 700 !important;
             color: #ffffff !important;
-            box-shadow: 0 8px 20px rgba(13, 95, 87, 0.3) !important;
+            box-shadow: 0 8px 20px rgba(15, 118, 110, 0.3) !important;
             transition: all 0.25s ease !important;
             display: flex;
             align-items: center;
@@ -64,7 +64,7 @@
 
         .btn-call-next:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(13, 95, 87, 0.4) !important;
+            box-shadow: 0 12px 25px rgba(15, 118, 110, 0.4) !important;
             color: #ffffff !important;
         }
 
@@ -91,7 +91,7 @@
 
         .counter-badge {
             background: #f0fdfa;
-            color: #0d5f57;
+            color: #0f766e;
             border: 1px solid #ccfbf1;
             padding: 0.5rem 1.2rem;
             border-radius: 50px;
@@ -106,11 +106,10 @@
 
 @section('content')
     <div class="row g-4 align-items-stretch">
-        <!-- بطاقة عرض الرقم المستدعى حالياً -->
         <div class="col-lg-7">
             <div class="card queue-display-card h-100 text-center">
                 <div class="card-header bg-transparent border-0 pt-4 pb-0">
-                    <span class="text-muted fw-semibold small text-uppercase letter-spacing-1">
+                    <span class="text-muted fw-semibold small text-uppercase">
                         <i class="bi bi-person-check ms-1 text-primary"></i> الرقم قيد الاستقبال حالياً
                     </span>
                 </div>
@@ -132,7 +131,6 @@
             </div>
         </div>
 
-        <!-- لوحة التحكم بأزرار النداء -->
         <div class="col-lg-5">
             <div class="card control-card h-100 d-flex flex-column justify-content-between">
                 <div class="card-header bg-transparent border-bottom py-3">
@@ -145,8 +143,8 @@
                 <div class="card-body p-4 d-flex flex-column justify-content-center">
                     <form action="{{ route('v1.antrian.next') }}" method="POST" class="mb-3">
                         @csrf
-                        <input type="text" hidden name="antrian" value="{{ $data->nomor }}">
-                        <input type="text" hidden name="kode" value="{{ $data->loket->kode }}">
+                        <input type="hidden" name="antrian" value="{{ $data->nomor }}">
+                        <input type="hidden" name="kode" value="{{ $data->loket->kode }}">
                         <button type="submit" class="btn w-100 btn-call-next">
                             <span>استدعاء الرقم التالي</span>
                             <i class="bi bi-arrow-left-circle-fill fs-5"></i>
