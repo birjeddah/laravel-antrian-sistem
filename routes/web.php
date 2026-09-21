@@ -37,35 +37,43 @@ Route::prefix('v1')->middleware('auth')->group(function () {
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-// =========================================================================
-// مسارات شاشة الخدمة الذاتية للمراجعين (Kiosk) وإصدار التذاكر
-// =========================================================================
+// مسار شاشة الكيوسك المحدث لجلب جميع الأقسام وحساب أعداد الانتظار
 Route::get('/kiosk', function () {
-    $lokets = \App\Models\Loket::where('status', true)->get();
+    $lokets = \App\Models\Loket::all();
     return view('kiosk', compact('lokets'));
 })->name('kiosk');
 
 Route::get('/kiosk/ticket/{id}', function ($id) {
     $loket = \App\Models\Loket::findOrFail($id);
     
-    // حساب الرقم التالي بناءً على التذاكر المصدرة اليوم
-    $cacheKey = 'ticket_count_' . $id . '_' . date('Y-m-d');
-    $count = cache()->get($cacheKey, 0);
-    
-    $dbLatest = \App\Models\Antrian::where('loket_id', $id)
-        ->whereDate('created_at', \Carbon\Carbon::today())
+    // حساب التذاكر
+    $today = \Carbon\Carbon::today();
+    $dbCount = \App\Models\Antrian::where('loket_id', $id)
+        ->whereDate('created_at', $today)
         ->count();
-        
-    $next = max($count, $dbLatest) + 1;
-    cache()->put($cacheKey, $next);
 
+    $next = $dbCount + 1;
     $str_length = 3;
     $str = substr("0000{$next}", -$str_length);
     $nomor = $loket->kode . $str;
 
+    // حفظ التذكرة في النظام
+    \App\Models\Antrian::create([
+        'loket_id' => $loket->id,
+        'nomor' => $nomor,
+        'status' => 'waiting'
+    ]);
+
+    // عدد المراجعين في قائمة الانتظار لهذا القسم حالياً
+    $waitingCount = \App\Models\Antrian::where('loket_id', $id)
+        ->whereDate('created_at', $today)
+        ->where('status', 'waiting')
+        ->count();
+
     return response()->json([
         'nomor' => $nomor,
         'loket' => $loket->tujuan,
+        'waiting' => $waitingCount,
         'time' => date('Y-m-d h:i A')
     ]);
 });
