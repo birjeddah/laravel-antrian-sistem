@@ -7,11 +7,6 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
 */
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
@@ -37,43 +32,48 @@ Route::prefix('v1')->middleware('auth')->group(function () {
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-// مسار شاشة الكيوسك المحدث لجلب جميع الأقسام وحساب أعداد الانتظار
+// =========================================================================
+// مسارات شاشة الخدمة الذاتية (Kiosk) وإصدار التذاكر المحدثة
+// =========================================================================
 Route::get('/kiosk', function () {
     $lokets = \App\Models\Loket::all();
     return view('kiosk', compact('lokets'));
 })->name('kiosk');
 
 Route::get('/kiosk/ticket/{id}', function ($id) {
-    $loket = \App\Models\Loket::findOrFail($id);
-    
-    // حساب التذاكر
-    $today = \Carbon\Carbon::today();
-    $dbCount = \App\Models\Antrian::where('loket_id', $id)
-        ->whereDate('created_at', $today)
-        ->count();
+    try {
+        $loket = \App\Models\Loket::findOrFail($id);
+        $today = \Carbon\Carbon::today();
 
-    $next = $dbCount + 1;
-    $str_length = 3;
-    $str = substr("0000{$next}", -$str_length);
-    $nomor = $loket->kode . $str;
+        // عداد التذاكر الصادرة لليوم الحالي
+        $issuedKey = 'kiosk_issued_' . $id . '_' . date('Y-m-d');
 
-    // حفظ التذكرة في النظام
-    \App\Models\Antrian::create([
-        'loket_id' => $loket->id,
-        'nomor' => $nomor,
-        'status' => 'waiting'
-    ]);
+        // جلب عدد العمليات المسجلة في قاعدة البيانات للشباك اليوم
+        $dbCount = \App\Models\Antrian::where('loket_id', $id)
+            ->whereDate('created_at', $today)
+            ->count();
 
-    // عدد المراجعين في قائمة الانتظار لهذا القسم حالياً
-    $waitingCount = \App\Models\Antrian::where('loket_id', $id)
-        ->whereDate('created_at', $today)
-        ->where('status', 'waiting')
-        ->count();
+        $currentIssued = cache()->get($issuedKey, $dbCount);
+        $next = max($currentIssued, $dbCount) + 1;
+        cache()->put($issuedKey, $next, now()->endOfDay());
 
-    return response()->json([
-        'nomor' => $nomor,
-        'loket' => $loket->tujuan,
-        'waiting' => $waitingCount,
-        'time' => date('Y-m-d h:i A')
-    ]);
+        $str = sprintf('%03d', $next);
+        $prefix = (mb_strlen($loket->kode) > 4) ? mb_substr($loket->kode, 0, 1) : $loket->kode;
+        $nomor = $prefix . $str;
+
+        // حساب عدد المراجعين في قائمة الانتظار (إجمالي المسحوب - ما تم استدعاؤه)
+        $waitingCount = max(0, $next - $dbCount - 1);
+
+        return response()->json([
+            'nomor' => $nomor,
+            'loket' => $loket->tujuan,
+            'waiting' => $waitingCount,
+            'time' => now()->format('Y-m-d h:i A')
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'error' => true,
+            'message' => $e->getMessage()
+        ], 500);
+    }
 });
