@@ -136,10 +136,13 @@
         <div class="row g-4 justify-content-center">
             @forelse($lokets as $loket)
                 @php
-                    $countWaiting = \App\Models\Antrian::where('loket_id', $loket->id)
-                        ->whereDate('created_at', \Carbon\Carbon::today())
-                        ->where('status', 'waiting')
+                    $today = \Carbon\Carbon::today();
+                    $issuedKey = 'kiosk_issued_' . $loket->id . '_' . date('Y-m-d');
+                    $totalIssued = cache()->get($issuedKey, 0);
+                    $dbCount = \App\Models\Antrian::where('loket_id', $loket->id)
+                        ->whereDate('created_at', $today)
                         ->count();
+                    $countWaiting = max(0, $totalIssued - $dbCount);
                 @endphp
                 <div class="col-md-6 col-lg-4">
                     <div class="kiosk-card" onclick="issueTicket({{ $loket->id }})">
@@ -226,12 +229,13 @@
                     Swal.fire({
                         icon: 'success',
                         title: 'رقمك: ' + res.nomor,
-                        html: '<p class="mb-1">القسم: <b>' + res.loket + '</b></p><p>أمامك في الانتظار: <b>' + (res.waiting - 1) + '</b> مراجع</p>',
+                        html: '<p class="mb-1">القسم: <b>' + res.loket + '</b></p><p>أمامك في الانتظار: <b>' + res.waiting + '</b> مراجع</p>',
                         timer: 3500,
                         showConfirmButton: false
                     });
                 },
-                error: function() {
+                error: function(xhr) {
+                    console.error("AJAX Error:", xhr.responseText);
                     Swal.fire('خطأ', 'تعذر إصدار التذكرة، يرجى المحاولة ثانية', 'error');
                 }
             });
