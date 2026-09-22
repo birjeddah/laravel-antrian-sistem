@@ -1,4 +1,4 @@
-<!doctype html>
+    <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="utf-8">
@@ -13,18 +13,27 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100vh;
+            max-height: 100vh;
+            overflow: hidden; /* يمنع ظهور شريط التمرير نهائياً */
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             background: linear-gradient(135deg, #022c22, #064e3b, #047857, #0f172a);
             background-size: 400% 400%;
             animation: royalGradient 18s ease infinite;
             font-family: 'Cairo', sans-serif;
-            min-height: 100vh;
             color: #ffffff;
             display: flex;
             flex-direction: column;
             user-select: none;
-            overflow-x: hidden;
-            margin: 0;
         }
 
         @keyframes royalGradient {
@@ -33,28 +42,30 @@
             100% { background-position: 0% 50%; }
         }
 
+        /* الترويسة العلوية */
         .royal-header {
             background: rgba(2, 44, 34, 0.85);
             backdrop-filter: blur(16px);
             border-bottom: 2px solid rgba(212, 175, 55, 0.3);
-            padding: 2.5rem 1rem;
+            padding: 1rem 1.5rem;
             text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
         }
 
         .royal-logo {
-            height: 90px;
+            height: clamp(50px, 6vh, 75px);
             object-fit: contain;
-            margin-bottom: 1.2rem;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4));
+            margin-bottom: 0.4rem;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
         }
 
         .welcome-title {
-            font-size: 2.8rem;
+            font-size: clamp(1.4rem, 2.4vh, 2.2rem);
             font-weight: 900;
             color: #ffffff;
-            margin-bottom: 0.4rem;
-            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+            margin-bottom: 0.2rem;
+            line-height: 1.2;
         }
 
         .welcome-title span {
@@ -62,44 +73,62 @@
         }
 
         .welcome-subtitle {
-            font-size: 1.4rem;
+            font-size: clamp(0.95rem, 1.5vh, 1.2rem);
             color: #a7f3d0;
             font-weight: 700;
             margin-bottom: 0;
         }
 
+        /* الحاوية الرئيسية المرنة */
         .main-container {
             flex: 1;
             display: flex;
-            align-items: center;
-            padding: 3rem 1.5rem;
+            flex-direction: column;
+            padding: 1.2rem 2rem 1.5rem;
+            min-height: 0; /* يسمح للعناصر الداخلية بالتصغير التلقائي داخل الـ Flex */
         }
 
         .section-prompt {
-            font-size: 1.6rem;
+            font-size: clamp(1.1rem, 2vh, 1.5rem);
             font-weight: 800;
             color: #f1f5f9;
             text-align: center;
-            margin-bottom: 3rem;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
 
+        /* شبكة ديناميكية تتكيف مع أي عدد من الشبابيك */
+        .dynamic-departments-grid {
+            flex: 1;
+            display: grid;
+            gap: 1.2rem;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            align-content: stretch;
+            min-height: 0;
+            width: 100%;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        /* بطاقة القسم الذكية */
         .department-card {
             background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(14px);
             border: 2px solid rgba(20, 184, 166, 0.3);
-            border-radius: 32px;
-            padding: 3rem 2rem;
+            border-radius: 24px;
+            padding: 1.2rem 1rem;
             text-align: center;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
-            height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: space-evenly;
+            align-items: center;
+            height: 100%;
         }
 
         .department-card::after {
@@ -108,75 +137,73 @@
             top: 0;
             right: 0;
             left: 0;
-            height: 6px;
+            height: 5px;
             background: linear-gradient(90deg, #10b981, #fbbf24, #38bdf8);
         }
 
         .department-card:hover {
-            transform: translateY(-10px) scale(1.02);
+            transform: translateY(-4px) scale(1.015);
             border-color: #fbbf24;
             background: rgba(15, 23, 42, 0.9);
-            box-shadow: 0 30px 60px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.3);
         }
 
         .department-icon {
-            width: 90px;
-            height: 90px;
+            width: clamp(55px, 8vh, 80px);
+            height: clamp(55px, 8vh, 80px);
             background: rgba(16, 185, 129, 0.15);
             border: 2px solid rgba(16, 185, 129, 0.3);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1.5rem auto;
-            font-size: 2.5rem;
+            font-size: clamp(1.6rem, 3.5vh, 2.4rem);
             color: #34d399;
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
         }
 
         .department-card:hover .department-icon {
             background: rgba(251, 191, 36, 0.2);
             border-color: #fbbf24;
             color: #fbbf24;
-            transform: rotate(10deg) scale(1.1);
+            transform: scale(1.08);
         }
 
         .department-title {
-            font-size: 2rem;
+            font-size: clamp(1.3rem, 2.6vh, 2rem);
             font-weight: 800;
             color: #ffffff;
-            margin-bottom: 1.5rem;
+            margin: 0.5rem 0;
+            line-height: 1.2;
         }
 
         .queue-status-badge {
             background: rgba(2, 44, 34, 0.9);
             border: 1px solid rgba(20, 184, 166, 0.4);
             border-radius: 50px;
-            padding: 0.8rem 1.6rem;
-            font-size: 1.15rem;
+            padding: 0.4rem 1.2rem;
+            font-size: clamp(0.85rem, 1.4vh, 1.05rem);
             font-weight: 700;
             color: #e2e8f0;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
-            margin: 0 auto;
+            gap: 8px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
         }
 
         .waiting-number-val {
             color: #fbbf24;
             font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
+            font-size: clamp(1.1rem, 2vh, 1.4rem);
             font-weight: 900;
         }
 
-        /* إخفاء حاوية الطباعة في العرض العادي */
+        /* قالب الطباعة الحرارية */
         #ticket-print-area {
             display: none;
         }
 
-        /* قواعد حصرية وصارمة جداً للطابعة الحرارية بمقاس 80mm لتجنب صفحة الـ A4 الكبيرة */
         @media print {
             @page {
                 size: 80mm auto;
@@ -225,49 +252,41 @@
         <p class="welcome-subtitle">نسعد بخدمتكم، ونعتز بثقتكم الدائمة</p>
     </header>
 
-    <main class="main-container container">
-        <div class="w-100">
-            <h2 class="section-prompt">الرجاء اختيار القسم المطلوب لسحب التذكرة</h2>
-            
-            <div class="row g-5 justify-content-center">
-                @forelse($lokets as $loket)
-                    @php
-                        $today = \Carbon\Carbon::today();
-                        $issuedKey = 'kiosk_issued_' . $loket->id . '_' . date('Y-m-d');
-                        $totalIssued = cache()->get($issuedKey, 0);
-                        $dbCount = \App\Models\Antrian::where('loket_id', $loket->id)
-                            ->whereDate('created_at', $today)
-                            ->count();
-                        $countWaiting = max(0, $totalIssued - $dbCount);
-                    @endphp
-                    <div class="col-md-6 col-lg-5">
-                        <div class="department-card" onclick="issueTicket({{ $loket->id }})">
-                            <div>
-                                <div class="department-icon">
-                                    <i class="fas fa-hand-point-down"></i>
-                                </div>
-                                <h3 class="department-title">{{ $loket->tujuan }}</h3>
-                            </div>
-                            <div>
-                                <div class="queue-status-badge">
-                                    <span>المستفيدين في الانتظار:</span>
-                                    <span class="waiting-number-val" id="count-{{ $loket->id }}">{{ $countWaiting }}</span>
-                                </div>
-                            </div>
-                        </div>
+    <main class="main-container">
+        <h2 class="section-prompt">الرجاء اختيار القسم المطلوب لسحب التذكرة</h2>
+        
+        <div class="dynamic-departments-grid">
+            @forelse($lokets as $loket)
+                @php
+                    $today = \Carbon\Carbon::today();
+                    $issuedKey = 'kiosk_issued_' . $loket->id . '_' . date('Y-m-d');
+                    $totalIssued = cache()->get($issuedKey, 0);
+                    $dbCount = \App\Models\Antrian::where('loket_id', $loket->id)
+                        ->whereDate('created_at', $today)
+                        ->count();
+                    $countWaiting = max(0, $totalIssued - $dbCount);
+                @endphp
+                <div class="department-card" onclick="issueTicket({{ $loket->id }})">
+                    <div class="department-icon">
+                        <i class="fas fa-hand-point-down"></i>
                     </div>
-                @empty
-                    <div class="col-12 text-center">
-                        <div class="alert alert-warning fs-4 p-5 rounded-4 shadow-lg border-0 bg-dark text-light">
-                            لا توجد أقسام مفعلة حالياً. يرجى إعداد الشبابيك من لوحة التحكم.
-                        </div>
+                    <h3 class="department-title">{{ $loket->tujuan }}</h3>
+                    <div class="queue-status-badge">
+                        <span>في الانتظار:</span>
+                        <span class="waiting-number-val" id="count-{{ $loket->id }}">{{ $countWaiting }}</span>
                     </div>
-                @endforelse
-            </div>
+                </div>
+            @empty
+                <div class="d-flex align-items-center justify-content-center w-100">
+                    <div class="alert alert-warning fs-5 p-4 rounded-4 shadow-lg border-0 bg-dark text-light text-center">
+                        لا توجد أقسام مفعلة حالياً.
+                    </div>
+                </div>
+            @endforelse
         </div>
     </main>
 
-    <!-- قالب التذكرة الحرارية المصغر بالمقاس الصحيح -->
+    <!-- قالب التذكرة الحرارية -->
     <div id="ticket-print-area">
         <div class="t-title">جمعية البر بجدة</div>
         <div class="t-sub">نسعد بخدمتكم ونعتز بثقتكم</div>
@@ -296,11 +315,6 @@
                 osc.stop(ctx.currentTime + 0.5);
             } catch(e) {}
         }
-
-        // ملاحظة هامة جداً لتجاوز نافذة معاينة المتصفح في جهاز الكيوسك نهائياً:
-        // افتح متصفح الكروم في جهاز الكيوسك، اضغط Ctrl+P مرة واحدة، من قائمة الطابعات اختر طابعتك الحرارية،
-        // وفي قسم "Paper size" أو "حجم الورق" اختر 80mm (أو Roll)، وألغِ خيار "Headers and footers".
-        // الكروم يحفظ هذا الإعداد تلقائياً ولن تظهر معاينة الطباعة بعد ذلك أبداً بل ستخرج التذكرة فوراً!
 
         function issueTicket(id) {
             playChime();
